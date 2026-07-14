@@ -13,7 +13,9 @@ const sendOtpEmail = async (email, otp) => {
       },
       tls: {
         rejectUnauthorized: false
-      }
+      },
+      connectionTimeout: 5000, // 5 seconds connection timeout
+      greetingTimeout: 5000    // 5 seconds greeting timeout
     });
 
     const mailOptions = {

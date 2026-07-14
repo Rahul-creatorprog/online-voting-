@@ -59,7 +59,7 @@ router.post('/login', async (req, res) => {
 
     await AuditLog.create({ performedBy: student.registerNo, action: 'Student login initiated - OTP dispatched', ip });
     
-    // We send back success message. In the MERN stack, the actual token is given after OTP verification.
+    // We send back success message.
     res.json({ message: 'Login successful. OTP sent to your registered email.', email: student.email });
   } catch (error) {
     console.error(error);
