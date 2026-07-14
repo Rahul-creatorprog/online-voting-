@@ -8,7 +8,7 @@ export const AuthProvider = ({ children }) => {
   const [role, setRole] = useState(localStorage.getItem('role') || '');
   const [loading, setLoading] = useState(true);
 
-  const API_BASE = 'online-voting-production-2659.up.railway.app';
+  const API_BASE = 'https://online-voting-production-2659.up.railway.app/api';
 
   useEffect(() => {
     if (token) {
