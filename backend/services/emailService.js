@@ -2,7 +2,7 @@ const nodemailer = require('nodemailer');
 
 const sendOtpEmail = async (email, otp) => {
   try {
-    const smtpPort = parseInt(process.env.SMTP_PORT || '587');
+    const smtpPort = parseInt(process.env.SMTP_PORT || '465');
     const transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST || 'smtp.gmail.com',
       port: smtpPort,
