@@ -7,8 +7,8 @@ const sendOtpEmail = async (email, otp) => {
       port: parseInt(process.env.SMTP_PORT || '587'),
       secure: false, // true for 465, false for other ports
       auth: {
-        user: process.env.SMTP_USER || 'kprcasvote@gmail.com',
-        pass: process.env.SMTP_PASS || 'hijgxlaetpeptzqn'
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS
       },
       tls: {
         rejectUnauthorized: false
@@ -16,7 +16,7 @@ const sendOtpEmail = async (email, otp) => {
     });
 
     const mailOptions = {
-      from: `"College Online Voting" <${process.env.SMTP_USER || 'kprcasvote@gmail.com'}>`,
+      from: `"College Online Voting" <${process.env.SMTP_USER}>`,
       to: email,
       subject: 'Your Online Voting System OTP Code',
       html: `
