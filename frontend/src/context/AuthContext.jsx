@@ -8,7 +8,7 @@ export const AuthProvider = ({ children }) => {
   const [role, setRole] = useState(localStorage.getItem('role') || '');
   const [loading, setLoading] = useState(true);
 
-  const API_BASE = 'http://localhost:8080/api';
+  const API_BASE = 'https://online-voting-x5o3.onrender.com/api';
 
   useEffect(() => {
     if (token) {
