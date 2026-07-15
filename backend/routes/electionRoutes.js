@@ -187,4 +187,31 @@ router.get('/public/status', async (req, res) => {
   }
 });
 
+// POST /api/admin/elections/:id/release (Toggle Results Release)
+router.post('/:id/release', protect, adminOnly, async (req, res) => {
+  const { id } = req.params;
+  const { released } = req.body;
+  const ip = req.ip || req.connection.remoteAddress;
+
+  try {
+    const election = await Election.findById(id);
+    if (!election) {
+      return res.status(404).json({ error: 'Not Found', message: 'Election not found.' });
+    }
+
+    election.resultsReleased = !!released;
+    await election.save();
+
+    await AuditLog.create({
+      performedBy: req.user.username || req.user.fullName,
+      action: `Changed results released status of Election '${election.title}' to ${election.resultsReleased}`,
+      ip
+    });
+
+    res.json(election);
+  } catch (error) {
+    res.status(500).json({ error: 'Server Error', message: error.message });
+  }
+});
+
 module.exports = router;

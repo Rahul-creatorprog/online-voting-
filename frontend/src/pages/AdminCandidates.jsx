@@ -170,7 +170,23 @@ const AdminCandidates = () => {
                 </div>
                 <div className="form-group">
                   <label className="form-label">Position / Post</label>
-                  <input type="text" className="form-control" required placeholder="e.g. Secretary" value={position} onChange={(e) => setPosition(e.target.value)} />
+                  <select
+                    className="form-control"
+                    required
+                    value={position}
+                    onChange={(e) => setPosition(e.target.value)}
+                  >
+                    <option value="">Select Position</option>
+                    <option value="President">President</option>
+                    <option value="Vice President">Vice President</option>
+                    <option value="Secretary">Secretary</option>
+                    <option value="Joint secretary">Joint secretary</option>
+                    <option value="Treasurer">Treasurer</option>
+                    <option value="cultural secretary">cultural secretary</option>
+                    <option value="sports secretary">sports secretary</option>
+                    <option value="placement secretary">placement secretary</option>
+                    <option value="brand ambassdor">brand ambassdor</option>
+                  </select>
                 </div>
                 <div className="form-group">
                   <label className="form-label">Candidate Photo</label>

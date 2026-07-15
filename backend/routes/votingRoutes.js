@@ -103,7 +103,8 @@ router.post('/cast', protect, async (req, res) => {
       votesToCreate.push({
         election: electionId,
         candidate: candidateId,
-        position: candidate.position
+        position: candidate.position,
+        student: student._id
       });
     }
 

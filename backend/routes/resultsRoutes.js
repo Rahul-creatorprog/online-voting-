@@ -7,7 +7,7 @@ const Candidate = require('../models/Candidate');
 const Vote = require('../models/Vote');
 const ElectionParticipation = require('../models/ElectionParticipation');
 const AuditLog = require('../models/AuditLog');
-const { protect } = require('../middleware/auth');
+const { protect, adminOnly } = require('../middleware/auth');
 
 const router = express.Router();
 
@@ -22,9 +22,9 @@ const computeResults = async (electionId, isAdminRequest) => {
   const votesCast = await ElectionParticipation.countDocuments({ election: electionId });
   const allStudentsVoted = totalStudents > 0 && votesCast >= totalStudents;
 
-  // If not admin, hide results unless election has ended or all students have voted
-  if (!isAdminRequest && election.status !== 'ENDED' && !allStudentsVoted) {
-    throw new Error('Election results are hidden while the voting is active. Results will be published after the election ends or all students have voted.');
+  // If not admin, hide results unless the admin has released the results
+  if (!isAdminRequest && !election.resultsReleased) {
+    throw new Error('Election results are not released yet. Please check back later.');
   }
 
   const participationRate = totalStudents > 0 ? ((votesCast / totalStudents) * 100) : 0;
@@ -115,8 +115,8 @@ router.get('/available/list', protect, async (req, res) => {
       const votesCast = await ElectionParticipation.countDocuments({ election: election._id });
       const allStudentsVoted = totalStudents > 0 && votesCast >= totalStudents;
       
-      // Admin can see all, students can see if ENDED or all students voted
-      if (req.user.role === 'ADMIN' || election.status === 'ENDED' || allStudentsVoted) {
+      // Admin can see all, students can only see if resultsReleased is true
+      if (req.user.role === 'ADMIN' || election.resultsReleased) {
         available.push({
           _id: election._id,
           title: election.title,
@@ -125,7 +125,8 @@ router.get('/available/list', protect, async (req, res) => {
           endTime: election.endTime,
           votesCast,
           totalStudents,
-          allStudentsVoted
+          allStudentsVoted,
+          resultsReleased: election.resultsReleased
         });
       }
     }
@@ -283,6 +284,18 @@ router.get('/:electionId/export/pdf', protect, async (req, res) => {
     });
   } catch (error) {
     res.status(400).json({ error: 'Bad Request', message: error.message });
+  }
+});
+
+// GET /api/results/:electionId/detailed (Admin view detailed student votes)
+router.get('/:electionId/detailed', protect, adminOnly, async (req, res) => {
+  try {
+    const votes = await Vote.find({ election: req.params.electionId })
+      .populate('student', 'name registerNo department year')
+      .populate('candidate', 'name registerNo position');
+    res.json(votes);
+  } catch (error) {
+    res.status(500).json({ error: 'Server Error', message: error.message });
   }
 });
 

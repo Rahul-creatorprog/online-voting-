@@ -27,12 +27,17 @@ const Results = () => {
   const { electionId } = useParams();
   const { token, role, API_BASE } = useContext(AuthContext);
   const [results, setResults] = useState(null);
+  const [detailedVotes, setDetailedVotes] = useState([]);
+  const [resultsReleased, setResultsReleased] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
     fetchResults();
+    if (role === 'ADMIN') {
+      fetchDetailedVotes();
+    }
   }, [electionId]);
 
   const fetchResults = async () => {
@@ -43,10 +48,55 @@ const Results = () => {
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || 'Failed to fetch results');
       setResults(data);
+
+      // Check release status if admin
+      if (role === 'ADMIN') {
+        const elecRes = await fetch(`${API_BASE}/admin/elections/${electionId}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        if (elecRes.ok) {
+          const elecData = await elecRes.json();
+          setResultsReleased(elecData.resultsReleased);
+        }
+      }
     } catch (err) {
       setError(err.message);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchDetailedVotes = async () => {
+    try {
+      const res = await fetch(`${API_BASE}/results/${electionId}/detailed`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setDetailedVotes(data);
+      }
+    } catch (err) {
+      console.error('Failed to fetch detailed votes:', err);
+    }
+  };
+
+  const handleReleaseToggle = async () => {
+    try {
+      const nextReleased = !resultsReleased;
+      const res = await fetch(`${API_BASE}/admin/elections/${electionId}/release`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ released: nextReleased })
+      });
+      if (res.ok) {
+        setResultsReleased(nextReleased);
+        fetchResults();
+      }
+    } catch (err) {
+      console.error('Failed to toggle results release:', err);
     }
   };
 
@@ -89,6 +139,24 @@ const Results = () => {
 
         {results && (
           <>
+            {role === 'ADMIN' && (
+              <div className="glass-card" style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div>
+                  <h3 style={{ margin: 0 }}>Results Publication</h3>
+                  <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', margin: '0.2rem 0 0 0' }}>
+                    {resultsReleased 
+                      ? '📢 Results are currently published and visible to all students.' 
+                      : '🔒 Results are hidden from students. Click release to publish.'}
+                  </p>
+                </div>
+                <button 
+                  onClick={handleReleaseToggle} 
+                  className={`btn ${resultsReleased ? 'btn-secondary' : 'btn-primary'}`}
+                >
+                  {resultsReleased ? '🔒 Hide Results' : '📢 Release Results'}
+                </button>
+              </div>
+            )}
             {/* Metadata Summary */}
             <div className="glass-card" style={{ marginBottom: '2rem' }}>
               <h3>{results.electionTitle} Summary</h3>
@@ -194,6 +262,37 @@ const Results = () => {
                 </div>
               );
             })}
+            {role === 'ADMIN' && detailedVotes.length > 0 && (
+              <div className="glass-card" style={{ marginTop: '2rem' }}>
+                <h3 style={{ marginBottom: '1rem' }}>Detailed Student Votes Breakdown</h3>
+                <div className="table-container">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Student Name</th>
+                        <th>Register No</th>
+                        <th>Class Details</th>
+                        <th>Position</th>
+                        <th>Voted For</th>
+                        <th>Nominee Register No</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {detailedVotes.map((vote) => (
+                        <tr key={vote._id}>
+                          <td>{vote.student?.name || 'Unknown Student'}</td>
+                          <td><strong>{vote.student?.registerNo || 'N/A'}</strong></td>
+                          <td>{vote.student ? `${vote.student.department} - ${vote.student.year}` : 'N/A'}</td>
+                          <td><span className="candidate-badge" style={{ position: 'static' }}>{vote.position}</span></td>
+                          <td><strong>{vote.candidate?.name || 'N/A'}</strong></td>
+                          <td>{vote.candidate?.registerNo || 'N/A'}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
           </>
         )}
 
