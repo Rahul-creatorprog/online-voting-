@@ -21,7 +21,10 @@ export const AuthProvider = ({ children }) => {
   const checkStatus = async () => {
     try {
       const res = await fetch(`${API_BASE}/auth/status`, {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'ngrok-skip-browser-warning': 'true'
+        }
       });
       if (res.ok) {
         const data = await res.json();
@@ -45,7 +48,10 @@ export const AuthProvider = ({ children }) => {
   const login = async (username, password) => {
     const res = await fetch(`${API_BASE}/auth/login`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json',
+        'ngrok-skip-browser-warning': 'true'
+      },
       body: JSON.stringify({ username, password })
     });
     const data = await res.json();
@@ -56,7 +62,10 @@ export const AuthProvider = ({ children }) => {
   const verifyOtp = async (email, otp) => {
     const res = await fetch(`${API_BASE}/auth/otp/verify`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json',
+        'ngrok-skip-browser-warning': 'true'
+      },
       body: JSON.stringify({ email, otp })
     });
     const data = await res.json();
@@ -73,7 +82,10 @@ export const AuthProvider = ({ children }) => {
   const adminLogin = async (username, password) => {
     const res = await fetch(`${API_BASE}/auth/admin-login`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json',
+        'ngrok-skip-browser-warning': 'true'
+      },
       body: JSON.stringify({ username, password })
     });
     const data = await res.json();

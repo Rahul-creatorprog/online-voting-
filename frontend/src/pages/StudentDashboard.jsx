@@ -20,7 +20,10 @@ const StudentDashboard = () => {
   const fetchActiveElection = async () => {
     try {
       const res = await fetch(`${API_BASE}/voting/active-election`, {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'ngrok-skip-browser-warning': 'true'
+        }
       });
       if (res.ok) {
         const data = await res.json();
@@ -40,7 +43,10 @@ const StudentDashboard = () => {
   const fetchAvailableResults = async () => {
     try {
       const res = await fetch(`${API_BASE}/results/available/list`, {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'ngrok-skip-browser-warning': 'true'
+        }
       });
       if (res.ok) {
         const data = await res.json();

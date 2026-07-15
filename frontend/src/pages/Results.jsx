@@ -43,7 +43,10 @@ const Results = () => {
   const fetchResults = async () => {
     try {
       const res = await fetch(`${API_BASE}/results/${electionId}`, {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'ngrok-skip-browser-warning': 'true'
+        }
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || 'Failed to fetch results');
@@ -52,7 +55,10 @@ const Results = () => {
       // Check release status if admin
       if (role === 'ADMIN') {
         const elecRes = await fetch(`${API_BASE}/admin/elections/${electionId}`, {
-          headers: { Authorization: `Bearer ${token}` }
+          headers: { 
+            Authorization: `Bearer ${token}`,
+            'ngrok-skip-browser-warning': 'true'
+          }
         });
         if (elecRes.ok) {
           const elecData = await elecRes.json();
@@ -69,7 +75,10 @@ const Results = () => {
   const fetchDetailedVotes = async () => {
     try {
       const res = await fetch(`${API_BASE}/results/${electionId}/detailed`, {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'ngrok-skip-browser-warning': 'true'
+        }
       });
       if (res.ok) {
         const data = await res.json();
@@ -87,7 +96,8 @@ const Results = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
+          'ngrok-skip-browser-warning': 'true'
         },
         body: JSON.stringify({ released: nextReleased })
       });

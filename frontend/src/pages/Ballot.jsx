@@ -21,7 +21,10 @@ const Ballot = () => {
   const fetchBallot = async () => {
     try {
       const res = await fetch(`${API_BASE}/voting/active-election`, {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'ngrok-skip-browser-warning': 'true'
+        }
       });
       if (res.ok) {
         const data = await res.json();
@@ -75,7 +78,8 @@ const Ballot = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
+          'ngrok-skip-browser-warning': 'true'
         },
         body: JSON.stringify({
           electionId: election._id,
