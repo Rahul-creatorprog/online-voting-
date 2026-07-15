@@ -36,6 +36,7 @@ export const AuthProvider = ({ children }) => {
       }
     } catch (err) {
       console.error('Auth verification error:', err);
+      logout();
     } finally {
       setLoading(false);
     }
