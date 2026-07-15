@@ -23,8 +23,10 @@ const auditLogRoutes = require('./routes/auditLogRoutes');
 
 const app = express();
 
-// Connect Database
-connectDB();
+// Connect Database and Seed
+connectDB().then(() => {
+  seedDatabase();
+});
 
 // Ensure uploads folder exists
 const uploadsDir = path.join(__dirname, 'uploads');
@@ -50,10 +52,23 @@ app.use('/api/results', resultsRoutes);
 app.use('/api', profileRoutes); // Handles /api/student/change-password & /api/admin/change-password
 app.use('/api/admin/audit-logs', auditLogRoutes);
 
-// Root endpoint
-app.get('/', (req, res) => {
-  res.json({ message: 'Online Voting System API is running...' });
-});
+// Serve static frontend files if they exist (production monolith mode)
+const frontendBuildPath = path.join(__dirname, '../frontend/dist');
+if (fs.existsSync(frontendBuildPath)) {
+  app.use(express.static(frontendBuildPath));
+  // Keep API routes intact, but send index.html for all other page requests
+  app.get('*', (req, res, next) => {
+    if (req.path.startsWith('/api')) {
+      return next();
+    }
+    res.sendFile(path.join(frontendBuildPath, 'index.html'));
+  });
+} else {
+  // Fallback root endpoint if frontend is not built
+  app.get('/', (req, res) => {
+    res.json({ message: 'Online Voting System API is running (Frontend not built)...' });
+  });
+}
 
 // Seed data function
 const seedDatabase = async () => {
@@ -120,8 +135,7 @@ const seedDatabase = async () => {
   }
 };
 
-// Seed database after a small delay to allow database connection to succeed
-setTimeout(seedDatabase, 2000);
+
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {

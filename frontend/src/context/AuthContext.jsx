@@ -8,7 +8,11 @@ export const AuthProvider = ({ children }) => {
   const [role, setRole] = useState(localStorage.getItem('role') || '');
   const [loading, setLoading] = useState(true);
 
-  const API_BASE = 'https://arrange-cruelty-jingle.ngrok-free.dev/api';
+  // Dynamically determine the API base path. If developing locally on port 5173, point to backend 8080.
+  // Otherwise, use a relative path /api (since the backend will host the frontend assets in production).
+  const API_BASE = window.location.origin.includes('localhost:') || window.location.origin.includes('127.0.0.1:')
+    ? 'http://localhost:8080/api'
+    : `${window.location.origin}/api`;
 
   useEffect(() => {
     if (token) {

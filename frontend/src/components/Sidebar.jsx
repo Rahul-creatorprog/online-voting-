@@ -27,7 +27,7 @@ const Sidebar = ({ isOpen, onClose }) => {
             </li>
             <li>
               <NavLink to="/admin/audit-logs" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
-                📜 Audit Logs
+                🗳️ Voter Logs
               </NavLink>
             </li>
             <li>
