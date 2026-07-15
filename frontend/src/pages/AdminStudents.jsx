@@ -36,7 +36,10 @@ const AdminStudents = () => {
   const fetchStudents = async () => {
     try {
       const res = await fetch(`${API_BASE}/admin/students?search=${search}&page=${page}&size=10`, {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'ngrok-skip-browser-warning': 'true'
+        }
       });
       if (res.ok) {
         const data = await res.json();
@@ -62,7 +65,8 @@ const AdminStudents = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
+          'ngrok-skip-browser-warning': 'true'
         },
         body: JSON.stringify({
           registerNo: regNo,
@@ -94,7 +98,10 @@ const AdminStudents = () => {
     try {
       const res = await fetch(`${API_BASE}/admin/students/${id}/toggle`, {
         method: 'POST',
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'ngrok-skip-browser-warning': 'true'
+        }
       });
       const data = await res.json();
       if (!res.ok) throw new Error('Failed to toggle status');
@@ -121,7 +128,8 @@ const AdminStudents = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
+          'ngrok-skip-browser-warning': 'true'
         },
         body: JSON.stringify({ password: newPassword })
       });
@@ -140,7 +148,10 @@ const AdminStudents = () => {
     try {
       const res = await fetch(`${API_BASE}/admin/students/${id}`, {
         method: 'DELETE',
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'ngrok-skip-browser-warning': 'true'
+        }
       });
       if (!res.ok) throw new Error('Failed to delete student');
 
@@ -165,7 +176,10 @@ const AdminStudents = () => {
     try {
       const res = await fetch(`${API_BASE}/admin/students/import`, {
         method: 'POST',
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'ngrok-skip-browser-warning': 'true'
+        },
         body: formData
       });
       const data = await res.json();

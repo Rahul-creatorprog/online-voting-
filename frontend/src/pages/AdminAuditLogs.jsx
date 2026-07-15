@@ -20,7 +20,10 @@ const AdminAuditLogs = () => {
   const fetchLogs = async () => {
     try {
       const res = await fetch(`${API_BASE}/admin/audit-logs?page=${page}&size=15`, {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'ngrok-skip-browser-warning': 'true'
+        }
       });
       if (res.ok) {
         const data = await res.json();

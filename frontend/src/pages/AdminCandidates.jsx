@@ -32,7 +32,10 @@ const AdminCandidates = () => {
     try {
       // 1. Fetch Election Detail
       const elecRes = await fetch(`${API_BASE}/admin/elections/${electionId}`, {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'ngrok-skip-browser-warning': 'true'
+        }
       });
       if (elecRes.ok) {
         const elecData = await elecRes.json();
@@ -41,7 +44,10 @@ const AdminCandidates = () => {
 
       // 2. Fetch Candidates
       const candRes = await fetch(`${API_BASE}/admin/candidates?electionId=${electionId}`, {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'ngrok-skip-browser-warning': 'true'
+        }
       });
       if (candRes.ok) {
         const candData = await candRes.json();
@@ -77,7 +83,8 @@ const AdminCandidates = () => {
       const res = await fetch(`${API_BASE}/admin/candidates`, {
         method: 'POST',
         headers: {
-          Authorization: `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
+          'ngrok-skip-browser-warning': 'true'
         },
         body: formData
       });
@@ -109,7 +116,10 @@ const AdminCandidates = () => {
     try {
       const res = await fetch(`${API_BASE}/admin/candidates/${id}`, {
         method: 'DELETE',
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'ngrok-skip-browser-warning': 'true'
+        }
       });
       if (!res.ok) throw new Error('Failed to delete candidate');
 

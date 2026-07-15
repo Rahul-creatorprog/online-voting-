@@ -27,7 +27,10 @@ const AdminDashboard = () => {
     try {
       // 1. Fetch public/active election stats
       const statsRes = await fetch(`${API_BASE}/admin/elections/public/status`, {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'ngrok-skip-browser-warning': 'true'
+        }
       });
       if (statsRes.ok) {
         const statsData = await statsRes.json();
@@ -36,7 +39,10 @@ const AdminDashboard = () => {
 
       // 2. Fetch all elections
       const electionsRes = await fetch(`${API_BASE}/admin/elections`, {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'ngrok-skip-browser-warning': 'true'
+        }
       });
       if (electionsRes.ok) {
         const electionsData = await electionsRes.json();
@@ -62,7 +68,8 @@ const AdminDashboard = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
+          'ngrok-skip-browser-warning': 'true'
         },
         body: JSON.stringify({ status: nextStatus })
       });
@@ -84,7 +91,10 @@ const AdminDashboard = () => {
     try {
       const res = await fetch(`${API_BASE}/admin/elections/${id}`, {
         method: 'DELETE',
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'ngrok-skip-browser-warning': 'true'
+        }
       });
       if (!res.ok) throw new Error('Failed to delete election');
 
