@@ -1,6 +1,6 @@
 {
   "name": "online-voting-system-root",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Root package.json to deploy MERN backend easily",
   "main": "backend/server.js",
   "scripts": {
