@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { AuthContext } from '../context/AuthContext';
-import { Link } from 'react-router-dom';
+import logo from '../assets/logo.jpg';
 
 const Navbar = ({ onToggleSidebar, sidebarOpen }) => {
   const { user, role, logout } = useContext(AuthContext);
@@ -23,9 +23,9 @@ const Navbar = ({ onToggleSidebar, sidebarOpen }) => {
             {sidebarOpen ? '✕' : '☰'}
           </button>
         )}
-        <Link to="/" className="logo">
-          <span style={{ color: 'var(--primary-color)', fontSize: '1.6rem' }}>🗳️</span>
-          <span>Online Voting</span>
+        <Link to="/" className="logo" style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+          <img src={logo} alt="Logo" style={{ width: '35px', height: '35px', objectFit: 'contain', borderRadius: '6px' }} />
+          <span style={{ fontSize: '1.15rem', fontWeight: '700' }}>IT Voting</span>
         </Link>
       </div>
 

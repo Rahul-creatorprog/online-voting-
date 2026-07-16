@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import Toast from '../components/Toast';
+import logo from '../assets/logo.jpg';
 
 const Login = () => {
   const { login, adminLogin } = useContext(AuthContext);
@@ -44,9 +45,13 @@ const Login = () => {
       <div className="bg-decor decor-2"></div>
       
       <div className="glass-card" style={{ width: '100%', maxWidth: '450px' }}>
-        <h2 style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
-          <span className="text-gradient">Online Voting System</span>
-        </h2>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '1.5rem' }}>
+          <img src={logo} alt="Department Logo" style={{ width: '90px', height: '90px', objectFit: 'contain', marginBottom: '0.75rem', borderRadius: '12px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }} />
+          <h2 style={{ textAlign: 'center', margin: 0, fontSize: '1.4rem', fontWeight: '700' }}>
+            <span className="text-gradient">B.Sc. Information Technology</span>
+          </h2>
+          <span style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '1px', marginTop: '0.25rem' }}>Voting System</span>
+        </div>
 
         {/* Tab Headers */}
         <div style={{ display: 'flex', borderBottom: '1px solid var(--border-color)', marginBottom: '1.5rem' }}>
