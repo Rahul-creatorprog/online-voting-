@@ -58,9 +58,16 @@ export const AuthProvider = ({ children }) => {
       },
       body: JSON.stringify({ username, password })
     });
-    const data = await res.json();
+    const text = await res.text();
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch (e) {
+      console.error("Non-JSON response received:", text);
+      throw new Error(`Server error (HTML returned): ${text.substring(0, 60)}...`);
+    }
     if (!res.ok) throw new Error(data.message || 'Login failed');
-    return data; // returns email for OTP verification
+    return data;
   };
 
   const verifyOtp = async (email, otp) => {
@@ -72,7 +79,14 @@ export const AuthProvider = ({ children }) => {
       },
       body: JSON.stringify({ email, otp })
     });
-    const data = await res.json();
+    const text = await res.text();
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch (e) {
+      console.error("Non-JSON response received:", text);
+      throw new Error(`Server error (HTML returned): ${text.substring(0, 60)}...`);
+    }
     if (!res.ok) throw new Error(data.message || 'OTP verification failed');
     
     setToken(data.token);
@@ -92,7 +106,14 @@ export const AuthProvider = ({ children }) => {
       },
       body: JSON.stringify({ username, password })
     });
-    const data = await res.json();
+    const text = await res.text();
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch (e) {
+      console.error("Non-JSON response received:", text);
+      throw new Error(`Server error (HTML returned): ${text.substring(0, 60)}...`);
+    }
     if (!res.ok) throw new Error(data.message || 'Invalid admin credentials');
 
     setToken(data.token);
