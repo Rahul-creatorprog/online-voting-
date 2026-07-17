@@ -11,7 +11,7 @@ const OtpVerify = () => {
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  const [resendCooldown, setResendCooldown] = useState(30);
+  const [resendCooldown, setResendCooldown] = useState(120);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -58,7 +58,7 @@ const OtpVerify = () => {
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || 'Resend failed');
       setSuccess('OTP resent successfully!');
-      setResendCooldown(30);
+      setResendCooldown(120);
     } catch (err) {
       setError(err.message);
     }
