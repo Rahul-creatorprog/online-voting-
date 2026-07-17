@@ -19,22 +19,16 @@ const sendOtpEmail = async (email, otp) => {
     });
 
     const mailOptions = {
-      from: '"College Online Voting" <kprcas596@gmail.com>',
+      from: '"IT Department Voting" <kprcas596@gmail.com>',
       to: email,
-      subject: 'Your Online Voting System OTP Code',
+      subject: `${otp} is your verification code`,
       html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 8px;">
-          <h2 style="color: #2b6cb0; text-align: center;">College Online Voting System</h2>
-          <hr style="border: 0; border-top: 1px solid #eee;" />
-          <p>Hello,</p>
-          <p>You have requested a secure verification code to sign into the Online Voting System.</p>
-          <div style="text-align: center; margin: 30px 0;">
-            <span style="font-size: 32px; font-weight: bold; letter-spacing: 5px; color: #2d3748; background: #edf2f7; padding: 10px 20px; border-radius: 4px; display: inline-block;">${otp}</span>
-          </div>
-          <p style="color: #718096; font-size: 14px;">This code is valid for 5 minutes. Do not share this OTP with anyone.</p>
-          <hr style="border: 0; border-top: 1px solid #eee;" />
-          <p style="color: #a0aec0; font-size: 12px; text-align: center;">This is an automated system email. Please do not reply directly.</p>
-        </div>
+        <p>Hello,</p>
+        <p>Use the following verification code for the B.Sc. IT Voting System login:</p>
+        <p style="font-size: 28px; font-weight: bold; color: #2b6cb0; letter-spacing: 2px; margin: 15px 0;">${otp}</p>
+        <p>This code is valid for 5 minutes. Please do not share it with anyone.</p>
+        <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;" />
+        <p style="font-size: 11px; color: #999;">This is an automated security notification. Do not reply to this email.</p>
       `
     };
 

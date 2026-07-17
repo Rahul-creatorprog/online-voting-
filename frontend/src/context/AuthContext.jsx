@@ -10,8 +10,8 @@ export const AuthProvider = ({ children }) => {
 
   // Dynamically determine the API base path. If developing locally on port 5173, point to backend 8080.
   // Otherwise, use a relative path /api (since the backend will host the frontend assets in production).
-  const API_BASE = window.location.origin.includes('localhost:') || window.location.origin.includes('127.0.0.1:')
-    ? 'http://localhost:8080/api'
+  const API_BASE = window.location.port === '5173' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? `${window.location.protocol}//${window.location.hostname}:8080/api`
     : `${window.location.origin}/api`;
 
   useEffect(() => {

@@ -259,31 +259,133 @@ router.post('/import', protect, adminOnly, upload.single('file'), async (req, re
       await workbook.xlsx.readFile(file.path);
       const worksheet = workbook.getWorksheet(1);
       
+      const headers = {};
+      const headerRow = worksheet.getRow(1);
+      for (let i = 1; i <= worksheet.columnCount; i++) {
+        const val = headerRow.getCell(i).value;
+        headers[i] = (val ? val.toString() : '').toLowerCase().trim();
+      }
+
+      let regNoCol = 1;
+      let nameCol = 2;
+      let deptCol = 3;
+      let yearCol = 4;
+      let emailCol = 5;
+      let passwordCol = null;
+
+      for (let i = 1; i <= worksheet.columnCount; i++) {
+        const header = headers[i];
+        if (!header) continue;
+        if (header.includes('roll') || header.includes('register') || header.includes('reg')) {
+          regNoCol = i;
+        } else if (header.includes('name')) {
+          nameCol = i;
+        } else if (header.includes('email')) {
+          emailCol = i;
+        } else if (header.includes('department') || header.includes('dept')) {
+          deptCol = i;
+        } else if (header.includes('year') || header.includes('class')) {
+          yearCol = i;
+        } else if (header.includes('password') || header.includes('pass')) {
+          passwordCol = i;
+        }
+      }
+
+      const hasDept = Object.values(headers).some(h => h && (h.includes('department') || h.includes('dept')));
+      const hasYear = Object.values(headers).some(h => h && (h.includes('year') || h.includes('class')));
+
       worksheet.eachRow((row, rowNumber) => {
         if (rowNumber === 1) return; // Skip Header
         
-        const regNo = row.getCell(1).text;
-        const name = row.getCell(2).text;
-        const dept = row.getCell(3).text;
-        const year = row.getCell(4).text;
-        const email = row.getCell(5).text;
+        const regNoVal = row.getCell(regNoCol).value;
+        const nameVal = row.getCell(nameCol).value;
+        const emailVal = row.getCell(emailCol).value;
+        const deptVal = hasDept ? row.getCell(deptCol).value : null;
+        const yearVal = hasYear ? row.getCell(yearCol).value : null;
+        const passwordVal = passwordCol ? row.getCell(passwordCol).value : null;
 
-        rows.push({ regNo, name, dept, year, email, rowNumber });
+        const regNo = regNoVal ? regNoVal.toString().trim() : '';
+        const name = nameVal ? nameVal.toString().trim() : '';
+        const email = emailVal ? emailVal.toString().trim() : '';
+        
+        let dept = deptVal ? deptVal.toString().trim() : '';
+        let year = yearVal ? yearVal.toString().trim() : '';
+        let password = passwordVal ? passwordVal.toString().trim() : '';
+
+        if (!dept) {
+          dept = regNo.includes('BIT') ? 'Information Technology' : (regNo.includes('CSE') ? 'Computer Science' : 'Information Technology');
+        }
+        if (!year) {
+          year = 'II Year';
+        }
+
+        rows.push({ regNo, name, dept, year, email, password, rowNumber });
       });
     } else if (file.originalname.endsWith('.csv')) {
       await workbook.csv.readFile(file.path);
       const worksheet = workbook.getWorksheet(1);
 
+      const headers = {};
+      const headerRow = worksheet.getRow(1);
+      for (let i = 1; i <= worksheet.columnCount; i++) {
+        const val = headerRow.getCell(i).value;
+        headers[i] = (val ? val.toString() : '').toLowerCase().trim();
+      }
+
+      let regNoCol = 1;
+      let nameCol = 2;
+      let deptCol = 3;
+      let yearCol = 4;
+      let emailCol = 5;
+      let passwordCol = null;
+
+      for (let i = 1; i <= worksheet.columnCount; i++) {
+        const header = headers[i];
+        if (!header) continue;
+        if (header.includes('roll') || header.includes('register') || header.includes('reg')) {
+          regNoCol = i;
+        } else if (header.includes('name')) {
+          nameCol = i;
+        } else if (header.includes('email')) {
+          emailCol = i;
+        } else if (header.includes('department') || header.includes('dept')) {
+          deptCol = i;
+        } else if (header.includes('year') || header.includes('class')) {
+          yearCol = i;
+        } else if (header.includes('password') || header.includes('pass')) {
+          passwordCol = i;
+        }
+      }
+
+      const hasDept = Object.values(headers).some(h => h && (h.includes('department') || h.includes('dept')));
+      const hasYear = Object.values(headers).some(h => h && (h.includes('year') || h.includes('class')));
+
       worksheet.eachRow((row, rowNumber) => {
         if (rowNumber === 1) return; // Skip Header
 
-        const regNo = row.getCell(1).text;
-        const name = row.getCell(2).text;
-        const dept = row.getCell(3).text;
-        const year = row.getCell(4).text;
-        const email = row.getCell(5).text;
+        const regNoVal = row.getCell(regNoCol).value;
+        const nameVal = row.getCell(nameCol).value;
+        const emailVal = row.getCell(emailCol).value;
+        const deptVal = hasDept ? row.getCell(deptCol).value : null;
+        const yearVal = hasYear ? row.getCell(yearCol).value : null;
+        const passwordVal = passwordCol ? row.getCell(passwordCol).value : null;
 
-        rows.push({ regNo, name, dept, year, email, rowNumber });
+        const regNo = regNoVal ? regNoVal.toString().trim() : '';
+        const name = nameVal ? nameVal.toString().trim() : '';
+        const email = emailVal ? emailVal.toString().trim() : '';
+        
+        let dept = deptVal ? deptVal.toString().trim() : '';
+        let year = yearVal ? yearVal.toString().trim() : '';
+        let password = passwordVal ? passwordVal.toString().trim() : '';
+
+        if (!dept) {
+          dept = regNo.includes('BIT') ? 'Information Technology' : (regNo.includes('CSE') ? 'Computer Science' : 'Information Technology');
+        }
+        if (!year) {
+          year = 'II Year';
+        }
+
+        rows.push({ regNo, name, dept, year, email, password, rowNumber });
       });
     } else {
       return res.status(400).json({ error: 'Unsupported file type. Please upload a .xlsx or .csv file.' });
@@ -293,9 +395,9 @@ router.post('/import', protect, adminOnly, upload.single('file'), async (req, re
 
     for (const data of rows) {
       totalRows++;
-      const { regNo, name, dept, year, email, rowNumber } = data;
+      const { regNo, name, dept, year, email, password, rowNumber } = data;
 
-      if (!regNo || !name || !dept || !year || !email) {
+      if (!regNo || !name || !email) {
         logs.push(`Row ${rowNumber}: Ignored due to empty column value(s).`);
         errorCount++;
         continue;
@@ -318,13 +420,15 @@ router.post('/import', protect, adminOnly, upload.single('file'), async (req, re
         continue;
       }
 
+      const passHash = password ? await bcrypt.hash(password, 10) : defaultPassHash;
+
       await Student.create({
         registerNo: regNo.toUpperCase().trim(),
         name: name.trim(),
         department: dept.trim(),
         year: year.trim(),
         email: email.toLowerCase().trim(),
-        password: defaultPassHash,
+        password: passHash,
         status: 'ENABLED'
       });
 
